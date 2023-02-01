@@ -21,9 +21,9 @@ class RepositoryTest {
         repo.cloneRepository();
         
         String dirName = repo.getDirName();
-        System.out.println(dirName);
+        File dir = new File(dirName).listFiles(File::isDirectory)[0];
+        System.out.println(dir);
 
-        File dir = new File(dirName);
         assertTrue(dir.exists() && dir.isDirectory());
 
         repo.deleteRepository();

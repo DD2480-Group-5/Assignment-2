@@ -10,6 +10,7 @@ public class Repository {
     private String name;
     private String url;
     private String branch;
+    /* temporary directory where the git clone command will be executed, need to visit next level directory to access the repository */
     private Path directory;
 
     /**
@@ -51,12 +52,19 @@ public class Repository {
      */
     public void cloneRepository() {
         try {
-            String cloneCommand = "git clone --branch " + this.branch + " " + this.url + " " + this.id;
+            String cloneCommand = "git clone --branch " + this.branch + " " + this.url;
+            String checkoutCommand = "git checkout " + this.id;
             String dirName = this.directory.toAbsolutePath().toString();
+
             System.out.println("Cloning the repo to a temporary directory...");
             Process process = Runtime.getRuntime().exec(cloneCommand, null, new File(dirName));
             process.waitFor();
             System.out.println("Clone task done!");
+
+            process = Runtime.getRuntime().exec(checkoutCommand, null, new File(dirName).listFiles(File::isDirectory)[0]);
+            process.waitFor();
+            System.out.println("Checkout commit ID " + this.id);
+            
         } catch (IOException | InterruptedException e) {
             System.out.println("Clone task failed.");
         }
