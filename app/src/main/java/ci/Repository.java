@@ -26,10 +26,14 @@ public class Repository {
         this.url = url;
         this.branch = branch;
         try {
-            this.directory = Files.createTempDirectory(this.name + "_" + this.branch);
+            this.directory = Files.createTempDirectory(this.name + "_" + this.branch + "-");
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public String getDirName() {
+        return this.directory.toAbsolutePath().toString();
     }
 
     /**
@@ -48,12 +52,38 @@ public class Repository {
     public void cloneRepository() {
         try {
             String cloneCommand = "git clone --branch " + this.branch + " " + this.url + " " + this.id;
+            String dirName = this.directory.toAbsolutePath().toString();
             System.out.println("Cloning the repo to a temporary directory...");
-            Process process = Runtime.getRuntime().exec(cloneCommand, null, new File(this.directory.toAbsolutePath().toString()));
+            Process process = Runtime.getRuntime().exec(cloneCommand, null, new File(dirName));
             process.waitFor();
             System.out.println("Clone task done!");
         } catch (IOException | InterruptedException e) {
             System.out.println("Clone task failed.");
         }
+    }
+    
+    /**
+     * This function delete the temporary directory used to store the cloned repository.
+     */
+    public void deleteRepository() {
+        File dir = new File(this.directory.toAbsolutePath().toString());
+        delete(dir);
+        System.out.println("Remove the repository successfully.");
+    }
+
+    /**
+     * This is a helper function to deleteRepository(). It deletes the directory recursively.
+     * @param dir : File object of the directory.
+     */
+    private static void delete(File dir) {
+        if (dir.isDirectory()) {
+            File[] files = dir.listFiles();
+            if (files != null) {
+               for (File file : files) {
+                  delete(file);
+               }
+            }
+         }
+         dir.delete();
     }
 }
