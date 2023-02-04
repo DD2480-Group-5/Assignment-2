@@ -46,7 +46,7 @@ public class Status {
 
     public Response createCommitStatus() throws Exception {
         String requestJson = "{\"state\": \"" + state + "\",\"target_url\": \"" + targetUrl + "\",\"description\": \"" + description + "\",\"context\": \"default\"}";
-        RequestBody body = RequestBody.create(JSON, requestJson);
+        RequestBody body = RequestBody.create(requestJson, JSON);
         Request request = new Request.Builder()
                 .url("https://api.github.com/repos/" + repository + "/statuses/" + sha)
                 .header("Authorization", user + " " + System.getenv("GITHUB_TOKEN"))
