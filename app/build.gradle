@@ -30,6 +30,8 @@ dependencies {
     compileOnly 'org.eclipse.jetty:jetty-jsp:7.+'
 
     runtimeOnly 'org.eclipse.jetty:jetty-server:7.+'
+
+    implementation 'org.gradle:gradle-tooling-api:7.3-20210825160000+0000'
 }
 
 application {

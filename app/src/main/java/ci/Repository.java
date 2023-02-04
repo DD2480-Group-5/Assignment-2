@@ -1,9 +1,15 @@
 package ci;
 
+import org.gradle.tooling.GradleConnectionException;
+import org.gradle.tooling.GradleConnector;
+import org.gradle.tooling.ProjectConnection;
+import org.gradle.tooling.ResultHandler;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Objects;
 
 public class Repository {
     private String id;
@@ -15,9 +21,10 @@ public class Repository {
 
     /**
      * Constructor of the Repository class.
-     * @param id : commitID of the git commit
-     * @param name : name of the repository
-     * @param url : ssh-url of the repository
+     *
+     * @param id     : commitID of the git commit
+     * @param name   : name of the repository
+     * @param url    : ssh-url of the repository
      * @param branch : branch name of the repository
      */
     public Repository(String id, String name, String url, String branch) {
@@ -42,8 +49,53 @@ public class Repository {
      * See issue {@link https://github.com/DD2480-Group-5/Assignment-2/issues/3}.
      */
     public void buildRepository() {
+        try {
+            /* get payload from HTTP request and create JSON object */
+            System.out.println("Running building process");
+            System.out.println("Begin to clone remote repository.");
+            cloneRepository();
 
-        return;
+            String dirName = this.directory.toAbsolutePath().toString();
+            File projectDir = Objects.requireNonNull(new File(dirName).listFiles(File::isDirectory))[0];
+
+            // TODO: update status -> PENDING
+            try (ProjectConnection connection = GradleConnector.newConnector().forProjectDirectory(projectDir).connect()) {
+                connection.newBuild().forTasks("build").run(new ResultHandler<Void>() {
+                    // check build results
+                    // TODO: update status -> SUCCESS/FAIL
+                    @Override
+                    public void onComplete(Void result) {
+                        System.out.println("Build successful.");
+                    }
+
+                    @Override
+                    public void onFailure(GradleConnectionException failure) {
+                        System.out.println("Build failed: " + failure.getMessage());
+                    }
+                });
+            }
+
+
+//            String dirName = this.directory.toAbsolutePath().toString();
+//            String buildCommand = "gradle check";
+//
+//            // build process
+//            System.out.println("Begin to build.");
+//            Process p = Runtime.getRuntime().exec(buildCommand, null, Objects.requireNonNull(new File(dirName).listFiles(File::isDirectory))[0]);
+//            p.waitFor();
+//            System.out.println("Build task done!");
+//
+//            // get build results
+//            StringBuilder output = new StringBuilder();
+//            String line = "";
+//            BufferedReader bf = new BufferedReader(new InputStreamReader(p.getInputStream()));
+//            while ((line = bf.readLine()) != null) {
+//                output.append(line).append('\n');
+//            }
+//            String status = output.toString();
+        } catch (IllegalStateException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -64,12 +116,12 @@ public class Repository {
             process = Runtime.getRuntime().exec(checkoutCommand, null, new File(dirName).listFiles(File::isDirectory)[0]);
             process.waitFor();
             System.out.println("Checkout commit ID " + this.id);
-            
+
         } catch (IOException | InterruptedException e) {
             System.out.println("Clone task failed.");
         }
     }
-    
+
     /**
      * This function delete the temporary directory used to store the cloned repository.
      */
@@ -81,17 +133,18 @@ public class Repository {
 
     /**
      * This is a helper function to deleteRepository(). It deletes the directory recursively.
+     *
      * @param dir : File object of the directory.
      */
     private static void delete(File dir) {
         if (dir.isDirectory()) {
             File[] files = dir.listFiles();
             if (files != null) {
-               for (File file : files) {
-                  delete(file);
-               }
+                for (File file : files) {
+                    delete(file);
+                }
             }
-         }
-         dir.delete();
+        }
+        dir.delete();
     }
 }
