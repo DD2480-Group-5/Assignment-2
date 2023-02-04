@@ -23,8 +23,6 @@ dependencies {
     // This dependency is used by the application.
     implementation 'com.google.guava:guava:31.1-jre'
 
-    implementation 'org.gradle:gradle-tooling-api:7.3-20210825160000+0000'
-
     implementation 'com.squareup.okhttp3:okhttp:4.8.1'
 
     implementation 'javax.servlet:javax.servlet-api:3.+'
