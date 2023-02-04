@@ -1,12 +1,13 @@
 package ci;
 
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.File;
 
 import static ci.Status.Possible_state;
-import static ci.Status.Possible_state.*;
+import static ci.Status.Possible_state.SUCCESS;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class RepositoryTest {
     
@@ -48,7 +49,7 @@ class RepositoryTest {
         Possible_state status = repo.buildRepository();
 
         System.out.println(status);
-        assertTrue(status == SUCCESS);
+        assertSame(SUCCESS, status);
 
         repo.deleteRepository();
     }
