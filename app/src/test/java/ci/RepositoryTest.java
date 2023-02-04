@@ -39,11 +39,11 @@ class RepositoryTest {
      * This test is used to test the build result. 
      */
     public void buildRepoTest() {
-        String id = "946b7a856c224cfa42b4d1ad185db10759954a5f";
-        String name = "My-first-Git";
-        String url = "git@github.com:BillXu0424/My-first-Git.git";
+        String id = "b5ab2152ed2764b423d6106da7f0c8146a0278b3";
+        String name = "Assignment-1";
+        String url = "git@github.com:DD2480-Group-5/Assignment-1.git";
         String branch = "main";
-        String user = "BillXu0424";
+        String user = "DD2480-Group-5";
 
         Repository repo = new Repository(id, name, url, branch, user);
         Possible_state status = repo.buildRepository();

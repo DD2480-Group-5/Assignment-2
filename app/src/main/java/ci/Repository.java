@@ -39,7 +39,7 @@ public class Repository {
         this.branch = branch;
         this.status = new Status(name, id, INIT, url, this.name + " " + this.branch, user);
         try {
-            this.directory = Files.createTempDirectory(this.name + "_" + this.branch + "-");
+            this.directory = Files.createTempDirectory(this.name + "-");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -61,7 +61,7 @@ public class Repository {
             cloneRepository();
 
             String dirName = this.directory.toAbsolutePath().toString();
-            File projectDir = Objects.requireNonNull(new File(dirName).listFiles(File::isDirectory))[0];
+            File projectDir = new File(dirName);
             String buildCommand = "gradle check";
 
             // update status -> PENDING
@@ -69,7 +69,7 @@ public class Repository {
             // begin build progress
             // build process
             System.out.println("Begin to build.");
-            Process p = Runtime.getRuntime().exec(buildCommand, null, Objects.requireNonNull(new File(dirName).listFiles(File::isDirectory))[0]);
+            Process p = Runtime.getRuntime().exec(buildCommand, null, projectDir);
             p.waitFor();
             System.out.println("Build task done!");
 
@@ -102,16 +102,16 @@ public class Repository {
      */
     public void cloneRepository() {
         try {
-            String cloneCommand = "git clone --branch " + this.branch + " " + this.url;
+            String cloneCommand = "git clone --branch " + this.branch + " " + this.url + " " + this.directory;
             String checkoutCommand = "git checkout " + this.id;
             String dirName = this.directory.toAbsolutePath().toString();
 
             System.out.println("Cloning the repo to a temporary directory...");
-            Process process = Runtime.getRuntime().exec(cloneCommand, null, new File(dirName));
+            Process process = Runtime.getRuntime().exec(cloneCommand);
             process.waitFor();
             System.out.println("Clone task done!");
 
-            process = Runtime.getRuntime().exec(checkoutCommand, null, new File(dirName).listFiles(File::isDirectory)[0]);
+            process = Runtime.getRuntime().exec(checkoutCommand, null, new File(dirName));
             process.waitFor();
             System.out.println("Checkout commit ID " + this.id);
 
