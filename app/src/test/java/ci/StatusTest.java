@@ -22,7 +22,7 @@ public class StatusTest {
 
         status.setStatus(Status.Possible_state.PENDING);
 
-        assertEquals(Status.getState(), Status.Possible_state.PENDING);
+        assertEquals(status.getState(), Status.Possible_state.PENDING);
 
         Response response = status.createCommitStatus();
 

@@ -4,13 +4,12 @@ import okhttp3.*;
 
 public class Status {
 
-    private static String repository = null;
-    private static String sha = null;
-    private static Possible_state state = null;
-    private static String targetUrl = null;
-    private static String description = null;
-
-    private static String user = null;
+    private String repository = null;
+    private String sha = null;
+    private Possible_state state = null;
+    private String targetUrl = null;
+    private String description = null;
+    private String user = null;
 
     public enum Possible_state {
         INIT,
@@ -23,22 +22,22 @@ public class Status {
     private static final OkHttpClient client = new OkHttpClient();
 
     public Status(String repository, String sha, Possible_state state, String targetUrl, String description, String user) {
-        Status.repository = repository;
-        Status.sha = sha;
-        Status.state = state;
-        Status.targetUrl = targetUrl;
-        Status.description = description;
-        Status.user = user;
+        this.repository = repository;
+        this.sha = sha;
+        this.state = state;
+        this.targetUrl = targetUrl;
+        this.description = description;
+        this.user = user;
     }
 
-    public static Possible_state getState() {
+    public Possible_state getState() {
         return state;
     }
 
     public void setStatus(Possible_state state) throws Exception {
         if (state == Possible_state.FAILURE || state == Possible_state.SUCCESS ||
                 state == Possible_state.PENDING) {
-            Status.state = state;
+            this.state = state;
         } else {
             throw new Exception("Wrong status.");
         }
