@@ -32,6 +32,8 @@ dependencies {
     implementation 'org.eclipse.jetty:jetty-jsp:7.+'
 
     implementation 'org.eclipse.jetty:jetty-server:7.+'
+
+    implementation group: 'org.json', name: 'json', version: '20090211'
 }
 
 application {
