@@ -48,7 +48,7 @@ public class Repository {
      * This function should build the repository and return the status of the build
      * See issue {@link https://github.com/DD2480-Group-5/Assignment-2/issues/3}.
      */
-    public void buildRepository() {
+    public void buildRepository(String description, String user) {
         try {
             /* get payload from HTTP request and create JSON object */
             System.out.println("Running building process");
@@ -58,19 +58,35 @@ public class Repository {
             String dirName = this.directory.toAbsolutePath().toString();
             File projectDir = Objects.requireNonNull(new File(dirName).listFiles(File::isDirectory))[0];
 
-            // TODO: update status -> PENDING
+            Status status = new Status(name, id, Status.Possible_state.INIT, url, description, user);
+
+            // update status -> PENDING
+            status.setStatus(Status.Possible_state.PENDING);
+            // begin build progress
             try (ProjectConnection connection = GradleConnector.newConnector().forProjectDirectory(projectDir).connect()) {
                 connection.newBuild().forTasks("build").run(new ResultHandler<Void>() {
                     // check build results
-                    // TODO: update status -> SUCCESS/FAIL
+                    // update status -> SUCCESS/FAILURE
                     @Override
                     public void onComplete(Void result) {
                         System.out.println("Build successful.");
+                        try {
+                            status.setStatus(Status.Possible_state.SUCCESS);
+                            status.createCommitStatus();
+                        } catch (Exception e) {
+                            throw new RuntimeException(e);
+                        }
                     }
 
                     @Override
                     public void onFailure(GradleConnectionException failure) {
                         System.out.println("Build failed: " + failure.getMessage());
+                        try {
+                            status.setStatus(Status.Possible_state.FAILURE);
+                            status.createCommitStatus();
+                        } catch (Exception e) {
+                            throw new RuntimeException(e);
+                        }
                     }
                 });
             }
@@ -93,7 +109,7 @@ public class Repository {
 //                output.append(line).append('\n');
 //            }
 //            String status = output.toString();
-        } catch (IllegalStateException e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
