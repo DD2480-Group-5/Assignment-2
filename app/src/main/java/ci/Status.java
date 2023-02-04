@@ -32,8 +32,8 @@ public class Status {
 
 
     public void setStatus(String state) throws Exception {
-        if (state.equals(Possible_state.FAILURE) || state.equals(Possible_state.SUCCESS) ||
-                state.equals(Possible_state.PENDING)) {
+        if (state.equals(Possible_state.FAILURE.toString()) || state.equals(Possible_state.SUCCESS.toString()) ||
+                state.equals(Possible_state.PENDING.toString())) {
             Status.state = state;
         } else {
             throw new Exception("Wrong status");
