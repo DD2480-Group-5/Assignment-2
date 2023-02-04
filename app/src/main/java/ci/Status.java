@@ -6,13 +6,13 @@ public class Status {
 
     private static String repository = null;
     private static String sha = null;
-    private static String state = null;
+    private static Possible_state state = null;
     private static String targetUrl = null;
     private static String description = null;
 
     private static String user = null;
 
-    private static enum Possible_state {
+    public enum Possible_state {
         INIT,
         PENDING,
         FAILURE,
@@ -22,7 +22,7 @@ public class Status {
     private static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
     private static final OkHttpClient client = new OkHttpClient();
 
-    public Status(String repository, String sha, String state, String targetUrl, String description, String user) {
+    public Status(String repository, String sha, Possible_state state, String targetUrl, String description, String user) {
         Status.repository = repository;
         Status.sha = sha;
         Status.state = state;
@@ -32,9 +32,9 @@ public class Status {
     }
 
 
-    public void setStatus(String state) throws Exception {
-        if (state.equals(Possible_state.FAILURE.toString()) || state.equals(Possible_state.SUCCESS.toString()) ||
-                state.equals(Possible_state.PENDING.toString())) {
+    public void setStatus(Possible_state state) throws Exception {
+        if (state == Possible_state.FAILURE || state == Possible_state.SUCCESS ||
+                state == Possible_state.PENDING) {
             Status.state = state;
         } else {
             throw new Exception("Wrong status.");
