@@ -22,7 +22,8 @@ public class Status {
     private static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
     private static final OkHttpClient client = new OkHttpClient();
 
-    public Status(String repository, String sha, Possible_state state, String targetUrl, String description, String user) {
+    public Status(String repository, String sha, Possible_state state, String targetUrl, String description,
+            String user) {
         Status.repository = repository;
         Status.sha = sha;
         Status.state = state;
@@ -35,6 +36,12 @@ public class Status {
         return state;
     }
 
+    /**
+     * Depreceated, see {@code GitHubAPIHandler.setState}
+     * 
+     * @throws Exception
+     */
+    @Deprecated
     public void setStatus(Possible_state state) throws Exception {
         if (state == Possible_state.FAILURE || state == Possible_state.SUCCESS ||
                 state == Possible_state.PENDING) {
@@ -44,8 +51,15 @@ public class Status {
         }
     }
 
+    /**
+     * Depreceated, see {@code GitHubAPIHandler.runCheck}
+     * 
+     * @throws Exception
+     */
+    @Deprecated
     public Response createCommitStatus() throws Exception {
-        String requestJson = "{\"state\": \"" + state + "\",\"target_url\": \"" + targetUrl + "\",\"description\": \"" + description + "\",\"context\": \"default\"}";
+        String requestJson = "{\"state\": \"" + state + "\",\"target_url\": \"" + targetUrl + "\",\"description\": \""
+                + description + "\",\"context\": \"default\"}";
         RequestBody body = RequestBody.create(requestJson, JSON);
         Request request = new Request.Builder()
                 .url("https://api.github.com/repos/" + repository + "/statuses/" + sha)
