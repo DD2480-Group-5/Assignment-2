@@ -1,17 +1,17 @@
 package ci;
 
-import org.gradle.tooling.GradleConnectionException;
-import org.gradle.tooling.GradleConnector;
-import org.gradle.tooling.ProjectConnection;
-import org.gradle.tooling.ResultHandler;
+import ci.Status.Possible_state;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-import ci.Status.Possible_state;
 import static ci.Status.Possible_state.*;
 
 public class Repository {
@@ -62,57 +62,35 @@ public class Repository {
 
             String dirName = this.directory.toAbsolutePath().toString();
             File projectDir = Objects.requireNonNull(new File(dirName).listFiles(File::isDirectory))[0];
+            String buildCommand = "gradle check";
 
             // update status -> PENDING
             status.setStatus(PENDING);
             // begin build progress
-            try (ProjectConnection connection = GradleConnector.newConnector().forProjectDirectory(projectDir).connect()) {
-                connection.newBuild().forTasks("build").run(new ResultHandler<Void>() {
-                    // check build results
-                    // update status -> SUCCESS/FAILURE
-                    @Override
-                    public void onComplete(Void result) {
-                        System.out.println("Build successful.");
-                        try {
-                            status.setStatus(SUCCESS);
-                            //status.createCommitStatus();
-                        } catch (Exception e) {
-                            throw new RuntimeException(e);
-                        }
-                    }
+            // build process
+            System.out.println("Begin to build.");
+            Process p = Runtime.getRuntime().exec(buildCommand, null, Objects.requireNonNull(new File(dirName).listFiles(File::isDirectory))[0]);
+            p.waitFor();
+            System.out.println("Build task done!");
 
-                    @Override
-                    public void onFailure(GradleConnectionException failure) {
-                        System.out.println("Build failed: " + failure.getMessage());
-                        try {
-                            status.setStatus(FAILURE);
-                            //status.createCommitStatus();
-                        } catch (Exception e) {
-                            throw new RuntimeException(e);
-                        }
-                    }
-                });
-                return status.getState();
+            // get build results
+            StringBuilder output = new StringBuilder();
+            String line = "";
+            BufferedReader bf = new BufferedReader(new InputStreamReader(p.getInputStream()));
+            while ((line = bf.readLine()) != null) {
+                output.append(line).append('\n');
             }
+            String output_s = output.toString();
 
-
-//            String dirName = this.directory.toAbsolutePath().toString();
-//            String buildCommand = "gradle check";
-//
-//            // build process
-//            System.out.println("Begin to build.");
-//            Process p = Runtime.getRuntime().exec(buildCommand, null, Objects.requireNonNull(new File(dirName).listFiles(File::isDirectory))[0]);
-//            p.waitFor();
-//            System.out.println("Build task done!");
-//
-//            // get build results
-//            StringBuilder output = new StringBuilder();
-//            String line = "";
-//            BufferedReader bf = new BufferedReader(new InputStreamReader(p.getInputStream()));
-//            while ((line = bf.readLine()) != null) {
-//                output.append(line).append('\n');
-//            }
-//            String status = output.toString();
+            String success = "BUILD SUCCESSFUL";
+            Pattern pSuccess = Pattern.compile(success);
+            Matcher m = pSuccess.matcher(output_s);
+            if (m.find()) {
+                status.setStatus(SUCCESS);
+            } else {
+                status.setStatus(FAILURE);
+            }
+            return status.getState();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
