@@ -11,6 +11,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Objects;
 
+import ci.Status.Possible_state;
+import static ci.Status.Possible_state.*;
+
 public class Repository {
     private String id;
     private String name;
@@ -18,6 +21,7 @@ public class Repository {
     private String branch;
     /* temporary directory where the git clone command will be executed, need to visit next level directory to access the repository */
     private Path directory;
+    private Status status;
 
     /**
      * Constructor of the Repository class.
@@ -27,12 +31,13 @@ public class Repository {
      * @param url    : ssh-url of the repository
      * @param branch : branch name of the repository
      */
-    public Repository(String id, String name, String url, String branch) {
+    public Repository(String id, String name, String url, String branch, String user) {
         // may be need a constructor which takes in a JSONObject, currently just use this one //
         this.id = id;
         this.name = name;
         this.url = url;
         this.branch = branch;
+        this.status = new Status(name, id, INIT, url, this.name + " " + this.branch, user);
         try {
             this.directory = Files.createTempDirectory(this.name + "_" + this.branch + "-");
         } catch (IOException e) {
@@ -48,7 +53,7 @@ public class Repository {
      * This function should build the repository and return the status of the build
      * See issue {@link https://github.com/DD2480-Group-5/Assignment-2/issues/3}.
      */
-    public void buildRepository(String description, String user) {
+    public Possible_state buildRepository() {
         try {
             /* get payload from HTTP request and create JSON object */
             System.out.println("Running building process");
@@ -58,10 +63,8 @@ public class Repository {
             String dirName = this.directory.toAbsolutePath().toString();
             File projectDir = Objects.requireNonNull(new File(dirName).listFiles(File::isDirectory))[0];
 
-            Status status = new Status(name, id, Status.Possible_state.INIT, url, description, user);
-
             // update status -> PENDING
-            status.setStatus(Status.Possible_state.PENDING);
+            status.setStatus(PENDING);
             // begin build progress
             try (ProjectConnection connection = GradleConnector.newConnector().forProjectDirectory(projectDir).connect()) {
                 connection.newBuild().forTasks("build").run(new ResultHandler<Void>() {
@@ -71,8 +74,8 @@ public class Repository {
                     public void onComplete(Void result) {
                         System.out.println("Build successful.");
                         try {
-                            status.setStatus(Status.Possible_state.SUCCESS);
-                            status.createCommitStatus();
+                            status.setStatus(SUCCESS);
+                            //status.createCommitStatus();
                         } catch (Exception e) {
                             throw new RuntimeException(e);
                         }
@@ -82,13 +85,14 @@ public class Repository {
                     public void onFailure(GradleConnectionException failure) {
                         System.out.println("Build failed: " + failure.getMessage());
                         try {
-                            status.setStatus(Status.Possible_state.FAILURE);
-                            status.createCommitStatus();
+                            status.setStatus(FAILURE);
+                            //status.createCommitStatus();
                         } catch (Exception e) {
                             throw new RuntimeException(e);
                         }
                     }
                 });
+                return status.getState();
             }
 
 
