@@ -13,6 +13,7 @@ public class Status {
     private static String user = null;
 
     private static enum Possible_state {
+        INIT,
         PENDING,
         FAILURE,
         SUCCESS
@@ -36,7 +37,7 @@ public class Status {
                 state.equals(Possible_state.PENDING.toString())) {
             Status.state = state;
         } else {
-            throw new Exception("Wrong status");
+            throw new Exception("Wrong status.");
         }
     }
 
