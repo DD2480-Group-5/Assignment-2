@@ -31,6 +31,9 @@ public class Status {
         Status.user = user;
     }
 
+    public static Possible_state getState() {
+        return state;
+    }
 
     public void setStatus(Possible_state state) throws Exception {
         if (state == Possible_state.FAILURE || state == Possible_state.SUCCESS ||
@@ -41,7 +44,7 @@ public class Status {
         }
     }
 
-    public void createCommitStatus() throws Exception {
+    public Response createCommitStatus() throws Exception {
         String requestJson = "{\"state\": \"" + state + "\",\"target_url\": \"" + targetUrl + "\",\"description\": \"" + description + "\",\"context\": \"default\"}";
         RequestBody body = RequestBody.create(JSON, requestJson);
         Request request = new Request.Builder()
@@ -53,6 +56,7 @@ public class Status {
             if (!response.isSuccessful()) {
                 throw new Exception("Could not create commit status. Response code: " + response.code());
             }
+            return response;
         }
     }
 }
