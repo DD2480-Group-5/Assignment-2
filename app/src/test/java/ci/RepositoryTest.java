@@ -13,8 +13,8 @@ class RepositoryTest {
      */
     public void gitCloneTest() {
         String id = "946b7a856c224cfa42b4d1ad185db10759954a5f";
-        String name = "My-first-Git";
-        String url = "git@github.com:BillXu0424/My-first-Git.git";
+        String name = "test";
+        String url = "git@github.com:LMC117/test.git";
         String branch = "main";
 
         Repository repo = new Repository(id, name, url, branch);
