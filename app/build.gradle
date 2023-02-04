@@ -27,13 +27,13 @@ dependencies {
 
     implementation 'com.squareup.okhttp3:okhttp:4.8.1'
 
-    runtimeOnly 'javax.servlet:javax.servlet-api:3.+'
+    implementation 'javax.servlet:javax.servlet-api:3.+'
 
-    compileOnly 'org.eclipse.jetty:jetty-webapp:7.+'
+    implementation 'org.eclipse.jetty:jetty-webapp:7.+'
     
-    compileOnly 'org.eclipse.jetty:jetty-jsp:7.+'
+    implementation 'org.eclipse.jetty:jetty-jsp:7.+'
 
-    runtimeOnly 'org.eclipse.jetty:jetty-server:7.+'
+    implementation 'org.eclipse.jetty:jetty-server:7.+'
 }
 
 application {
