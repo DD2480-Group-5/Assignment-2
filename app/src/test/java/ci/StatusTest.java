@@ -11,7 +11,7 @@ public class StatusTest {
       This test is used to test the Status class.
      */
     public void StatusMethodsTest() throws Exception {
-        String id = "b5ab2152ed2764b423d6106da7f0c8146a0278b3";
+        String id = "31113e4dc5da9b2e01c9c4ee85d2c5c4e9aa96b3";
         String name = "Assignment-1";
         String url = "git@github.com:DD2480-Group-5/Assignment-1.git";
         // String branch = "issue/105_zihao";

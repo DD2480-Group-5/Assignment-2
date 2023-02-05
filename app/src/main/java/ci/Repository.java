@@ -62,7 +62,7 @@ public class Repository {
 
             String dirName = this.directory.toAbsolutePath().toString();
             File projectDir = new File(dirName);
-            String buildCommand = "gradle check";
+            String buildCommand = "cmd /c gradle check";
 
             // update status -> PENDING
             status.setStatus(PENDING);
@@ -78,6 +78,7 @@ public class Repository {
             String line = "";
             BufferedReader bf = new BufferedReader(new InputStreamReader(p.getInputStream()));
             while ((line = bf.readLine()) != null) {
+                System.out.println(line);
                 output.append(line).append('\n');
             }
             String output_s = output.toString();
