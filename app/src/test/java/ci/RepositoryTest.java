@@ -2,10 +2,10 @@ package ci;
 
 import org.junit.jupiter.api.Test;
 
+import ci.GitHubAPIHandler.STATE;
+
 import java.io.File;
 
-import static ci.Status.Possible_state;
-import static ci.Status.Possible_state.SUCCESS;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -46,10 +46,10 @@ class RepositoryTest {
         String user = "DD2480-Group-5";
 
         Repository repo = new Repository(id, name, url, branch, user);
-        Possible_state status = repo.buildRepository();
+        STATE status = repo.buildRepository();
 
         System.out.println(status);
-        assertSame(SUCCESS, status);
+        assertSame(STATE.SUCCESS, status);
 
         repo.deleteRepository();
     }

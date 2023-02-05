@@ -72,6 +72,10 @@ public class GitHubAPIHandler {
         }
     }
 
+    public STATE getState() {
+        return this.state;
+    }
+
     /**
      * Updates a check run
      * 
