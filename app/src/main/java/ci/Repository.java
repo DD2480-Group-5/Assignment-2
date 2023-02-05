@@ -1,6 +1,6 @@
 package ci;
 
-import ci.Status.Possible_state;
+import ci.GitHubAPIHandler.STATE;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -8,11 +8,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import static ci.Status.Possible_state.*;
 
 public class Repository {
     private String id;
@@ -21,7 +18,8 @@ public class Repository {
     private String branch;
     /* temporary directory where the git clone command will be executed, need to visit next level directory to access the repository */
     private Path directory;
-    private Status status;
+    private GitHubAPIHandler handler;
+    // private Status status;
 
     /**
      * Constructor of the Repository class.
@@ -37,7 +35,8 @@ public class Repository {
         this.name = name;
         this.url = url;
         this.branch = branch;
-        this.status = new Status(name, id, INIT, url, this.name + " " + this.branch, user);
+        this.handler = new GitHubAPIHandler(name, user);
+        // this.status = new Status(name, id, INIT, url, this.name + " " + this.branch, user);
         try {
             this.directory = Files.createTempDirectory(this.name + "-");
         } catch (IOException e) {
@@ -53,7 +52,7 @@ public class Repository {
      * This function should build the repository and return the status of the build
      * See issue {@link https://github.com/DD2480-Group-5/Assignment-2/issues/3}.
      */
-    public Possible_state buildRepository() {
+    public STATE buildRepository() {
         try {
             /* get payload from HTTP request and create JSON object */
             System.out.println("Running building process");
@@ -65,7 +64,8 @@ public class Repository {
             String buildCommand = "cmd /c gradle check";
 
             // update status -> PENDING
-            status.setStatus(PENDING);
+            this.handler.setState(STATE.PENDING);
+            // status.setStatus(PENDING);
             // begin build progress
             // build process
             System.out.println("Begin to build.");
@@ -87,11 +87,11 @@ public class Repository {
             Pattern pSuccess = Pattern.compile(success);
             Matcher m = pSuccess.matcher(output_s);
             if (m.find()) {
-                status.setStatus(SUCCESS);
+                this.handler.setState(STATE.SUCCESS);
             } else {
-                status.setStatus(FAILURE);
+                this.handler.setState(STATE.FAILURE);
             }
-            return status.getState();
+            return this.handler.getState();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
