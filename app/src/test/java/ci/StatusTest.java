@@ -3,6 +3,8 @@ package ci;
 import okhttp3.Response;
 import org.junit.jupiter.api.Test;
 
+import ci.GitHubAPIHandler.STATE;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class StatusTest {
@@ -14,18 +16,19 @@ public class StatusTest {
         String id = "31113e4dc5da9b2e01c9c4ee85d2c5c4e9aa96b3";
         String name = "Assignment-1";
         String url = "git@github.com:DD2480-Group-5/Assignment-1.git";
-        // String branch = "issue/105_zihao";
+        String owner = "BillXu0424";
 
-        Status status = new Status(name, id, Status.Possible_state.INIT, url, "description", "BillXu0424");
+        GitHubAPIHandler handler = new GitHubAPIHandler(name, owner);
 
-        assertNotNull(status);
+        assertNotNull(handler.getState());
 
-        status.setStatus(Status.Possible_state.PENDING);
+        handler.setState(STATE.PENDING);
 
-        assertEquals(status.getState(), Status.Possible_state.PENDING);
+        assertEquals(handler.getState(), STATE.PENDING);
 
-        Response response = status.createCommitStatus();
+        /* please note that the targetUrl is different ssh-url of the repo, it's related to the CI server. */
+        // Response response = handler.setStatus(id, "ci-test", targetUrl);
 
-        assertTrue(response.isSuccessful());
+        // assertTrue(response.isSuccessful());
     }
 }
