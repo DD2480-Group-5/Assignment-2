@@ -35,13 +35,12 @@ public class GitHubAPIHandler {
     /**
      * Starts a check run
      * 
-     * @param name        The name of the check. For example, "code-coverage".
      * @param headSha     The SHA of the commit.
      * @param description A short description of the status.
      * @param targetUrl   The target URL to associate with this status.
      * @return The response or {@code null} if there was an error
      */
-    public Response setStatus(String name, String headSha, String description, String targetUrl) {
+    public Response setStatus(String headSha, String description, String targetUrl) {
         String requestJson = "{\"state\": \"" + state + "\",\"target_url\": \"" + targetUrl + "\",\"description\": \""
                 + description + "\",\"context\": \"default\"}";
         RequestBody body = RequestBody.create(requestJson, JSON);
