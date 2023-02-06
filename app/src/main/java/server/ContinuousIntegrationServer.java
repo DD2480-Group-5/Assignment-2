@@ -65,18 +65,21 @@ public class ContinuousIntegrationServer extends AbstractHandler {
         String payload = request.getReader().lines().collect(Collectors.joining());
         try {
             JSONObject json = new JSONObject(payload);
-            String repoName = json.get("name").toString();
+            JSONObject jsonRepo = json.getJSONObject("repository");
+            JSONObject jsonOwner = jsonRepo.getJSONObject("owner");
 
-            Repository repo = new Repository(json.get("id").toString(), repoName,
-                    json.get("url").toString(), json.get("branch").toString(), json.get("user").toString());
+            String repoName = jsonRepo.get("name").toString();
+            String commitID = jsonRepo.get("id").toString();
+            String sshURL = json.get("ssh_url").toString();
+            String user = jsonOwner.get("user").toString();
+
+            String[] spltRef = json.get("ref").toString().split("/");
+            String branch = spltRef[spltRef.length - 1];
+
+            Repository repo = new Repository(commitID, repoName, sshURL, branch, user);
             repo.buildRepository();
-            /**
-             * Add test when https://github.com/DD2480-Group-5/Assignment-2/issues/14 is
-             * resolved
-             */
 
             response.setStatus(HttpServletResponse.SC_OK);
-
         } catch (JSONException e) {
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
                     "Something went wrong while processing the POST request.");
