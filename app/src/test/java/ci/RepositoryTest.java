@@ -31,7 +31,7 @@ class RepositoryTest {
 
         assertTrue(dir.exists() && dir.isDirectory());
 
-        //assertTrue(false);
+        assertTrue(false);
 
         repo.deleteRepository();
     }
