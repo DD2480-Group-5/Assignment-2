@@ -74,7 +74,7 @@ public class ContinuousIntegrationServer extends AbstractHandler {
 
             String repoName = jsonRepo.get("name").toString();
             String commitID = json.get("after").toString();
-            String sshURL = json.get("ssh_url").toString();
+            String sshURL = jsonRepo.get("ssh_url").toString();
             String username = jsonPusher.get("name").toString();
 
             String[] spltRef = json.get("ref").toString().split("/");
