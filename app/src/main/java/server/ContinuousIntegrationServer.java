@@ -103,6 +103,7 @@ public class ContinuousIntegrationServer extends AbstractHandler {
         } catch (JSONException e) {
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
                     "Something went wrong while processing the POST request.");
+            e.printStackTrace();
         }
     }
 }
