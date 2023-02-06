@@ -4,6 +4,9 @@ import java.io.IOException;
 
 import okhttp3.*;
 
+/**
+ * This class is used to communicate with the GitHub REST API.
+ */
 public class GitHubAPIHandler {
     public enum STATE {
         INIT,
@@ -12,6 +15,10 @@ public class GitHubAPIHandler {
         SUCCESS
     }
 
+    /**
+     * Personal GitHub token, must be set as an environment variable by the name of
+     * {@code"GITHUB_TOKEN"}
+     */
     private static final String apiKey = System.getenv("GITHUB_TOKEN");
 
     private String repository;
@@ -22,6 +29,7 @@ public class GitHubAPIHandler {
     private static final OkHttpClient client = new OkHttpClient();
 
     /**
+     * Constructor
      * 
      * @param owner      The account owner of the repository. The name is not case
      *                   sensitive.
@@ -33,11 +41,12 @@ public class GitHubAPIHandler {
     }
 
     /**
-     * Starts a check run
+     * Sets the commit status for a commit with SHA {@code headSha}.
      * 
      * @param headSha     The SHA of the commit.
      * @param description A short description of the status.
-     * @param targetUrl   The target URL to associate with this status.
+     * @param targetUrl   The target URL to associate with this status. Will be
+     *                    linked from the GitHub UI.
      * @return The response or {@code null} if there was an error
      */
     public Response setStatus(String headSha, String description, String targetUrl) {
@@ -62,6 +71,14 @@ public class GitHubAPIHandler {
         }
     }
 
+    /**
+     * Sets the state of the handler to {@code state}
+     * 
+     * @param state The state to be set, can be either {@code FAILURE},
+     *              {@code SUCCESS} or {@code PENDING}. Otherwise an exception is
+     *              thrown.
+     * @throws Exception
+     */
     public void setState(STATE state) throws Exception {
         if (state == STATE.FAILURE || state == STATE.SUCCESS ||
                 state == STATE.PENDING) {
@@ -71,22 +88,12 @@ public class GitHubAPIHandler {
         }
     }
 
+    /**
+     * Getter method for the {@code state} class variable.
+     * 
+     * @return Current state
+     */
     public STATE getState() {
         return this.state;
-    }
-
-    /**
-     * Updates a check run
-     * 
-     * @param checkRunId The unique identifier of the check run.
-     * @param status     Can be one of: {@code "queued"},
-     *                   {@code "in_progress"} ,{@code "completed"}
-     * @param conclusion Can be one of: {@code "action_required"},
-     *                   {@code "failure"}, {@code "success"},
-     *                   {@code "skipped"}, {@code "stale"}, {@code "timed_out"}.
-     */
-    public void updateCheck(String checkRunId, String status, String conclusion) {
-
-        return;
     }
 }
