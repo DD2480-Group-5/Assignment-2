@@ -28,6 +28,7 @@ public class Repository {
      * @param name   : name of the repository
      * @param url    : ssh-url of the repository
      * @param branch : branch name of the repository
+     * @param user   : user name of the committer
      */
     public Repository(String id, String name, String url, String branch, String user) {
         // may be need a constructor which takes in a JSONObject, currently just use this one //
