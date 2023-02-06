@@ -61,15 +61,18 @@ public class Repository {
 
             String dirName = this.directory.toAbsolutePath().toString();
             File projectDir = new File(dirName);
+            String wrapCommand = "cmd /c gradle wrapper";
             String buildCommand = "cmd /c gradle check";
 
             // update status -> PENDING
             this.handler.setState(STATE.PENDING);
-            // status.setStatus(PENDING);
             // begin build progress
             // build process
             System.out.println("Begin to build.");
-            Process p = Runtime.getRuntime().exec(buildCommand, null, projectDir);
+            Process p = Runtime.getRuntime().exec(wrapCommand, null, projectDir);
+            p.waitFor();
+
+            p = Runtime.getRuntime().exec(buildCommand, null, projectDir);
             p.waitFor();
             System.out.println("Build task done!");
 
