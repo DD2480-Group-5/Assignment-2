@@ -67,8 +67,16 @@ public class ContinuousIntegrationServer extends AbstractHandler {
             JSONObject json = new JSONObject(payload);
             String repoName = json.get("name").toString();
 
-            Repository repo = new Repository(json.get("id").toString(), repoName,
-                    json.get("url").toString(), json.get("branch").toString(), json.get("user").toString());
+            String repoName = jsonRepo.get("name").toString();
+            String commitID = json.get("after").toString();
+            String sshURL = json.get("ssh_url").toString();
+            String ownerName = jsonOwner.get("name").toString();
+
+            String[] spltRef = json.get("ref").toString().split("/");
+            String branch = spltRef[spltRef.length - 1];
+
+            Repository repo = new Repository(commitID, repoName, sshURL, branch, ownerName);
+
             repo.buildRepository();
             /**
              * Add test when https://github.com/DD2480-Group-5/Assignment-2/issues/14 is
