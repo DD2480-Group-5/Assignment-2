@@ -69,14 +69,14 @@ public class ContinuousIntegrationServer extends AbstractHandler {
             JSONObject jsonOwner = jsonRepo.getJSONObject("owner");
 
             String repoName = jsonRepo.get("name").toString();
-            String commitID = jsonRepo.get("id").toString();
+            String commitID = json.get("after").toString();
             String sshURL = json.get("ssh_url").toString();
-            String user = jsonOwner.get("user").toString();
+            String ownerName = jsonOwner.get("name").toString();
 
             String[] spltRef = json.get("ref").toString().split("/");
             String branch = spltRef[spltRef.length - 1];
 
-            Repository repo = new Repository(commitID, repoName, sshURL, branch, user);
+            Repository repo = new Repository(commitID, repoName, sshURL, branch, ownerName);
             repo.buildRepository();
 
             response.setStatus(HttpServletResponse.SC_OK);
