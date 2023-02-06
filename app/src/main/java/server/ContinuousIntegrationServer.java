@@ -65,17 +65,32 @@ public class ContinuousIntegrationServer extends AbstractHandler {
         String payload = request.getReader().lines().collect(Collectors.joining());
         try {
             JSONObject json = new JSONObject(payload);
-            String repoName = json.get("name").toString();
+
+            /* deleting branch after merge pull request will also send a request */
+            if (json.isNull("head_commit")) return;
+
+            JSONObject jsonRepo = json.getJSONObject("repository");
+            JSONObject jsonPusher = json.getJSONObject("pusher");
 
             String repoName = jsonRepo.get("name").toString();
             String commitID = json.get("after").toString();
             String sshURL = json.get("ssh_url").toString();
-            String ownerName = jsonOwner.get("name").toString();
+            String username = jsonPusher.get("name").toString();
 
             String[] spltRef = json.get("ref").toString().split("/");
-            String branch = spltRef[spltRef.length - 1];
+            String branch;
+            /* some branch name may contain '/' */
+            if (spltRef.length > 3) {
+                branch = spltRef[2];
+                for (int i = 3; i < spltRef.length; i++) {
+                    branch = branch.concat("/" + spltRef[i]);
+                }
+            }
+            else {
+                branch = spltRef[spltRef.length - 1];
+            }
 
-            Repository repo = new Repository(commitID, repoName, sshURL, branch, ownerName);
+            Repository repo = new Repository(commitID, repoName, sshURL, branch, username);
 
             repo.buildRepository();
             /**
