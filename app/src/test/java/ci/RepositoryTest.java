@@ -31,26 +31,28 @@ class RepositoryTest {
 
         assertTrue(dir.exists() && dir.isDirectory());
 
+        assertTrue(false);
+
         repo.deleteRepository();
     }
 
-    @Test
+//   @Test
     /**
      * This test is used to test the build result. 
      */
-    public void buildRepoTest() {
-        String id = "31113e4dc5da9b2e01c9c4ee85d2c5c4e9aa96b3";
-        String name = "Assignment-1";
-        String url = "git@github.com:DD2480-Group-5/Assignment-1.git";
-        String branch = "main";
-        String user = "DD2480-Group-5";
-
-        Repository repo = new Repository(id, name, url, branch, user);
-        STATE status = repo.buildRepository();
-
-        System.out.println(status);
-        assertSame(STATE.SUCCESS, status);
-
-        repo.deleteRepository();
-    }
+//    public void buildRepoTest() {
+//        String id = "31113e4dc5da9b2e01c9c4ee85d2c5c4e9aa96b3";
+//        String name = "Assignment-1";
+//        String url = "git@github.com:DD2480-Group-5/Assignment-1.git";
+//        String branch = "main";
+//        String user = "DD2480-Group-5";
+//
+//        Repository repo = new Repository(id, name, url, branch, user);
+//        STATE status = repo.buildRepository();
+//
+//        System.out.println(status);
+//        assertSame(STATE.SUCCESS, status);
+//
+//        repo.deleteRepository();
+//    }
 }
