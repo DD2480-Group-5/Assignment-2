@@ -5,6 +5,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.ServletException;
 
 import java.io.IOException;
+import java.net.URLDecoder;
 import java.util.stream.Collectors;
 
 import org.eclipse.jetty.server.Server;
@@ -64,7 +65,10 @@ public class ContinuousIntegrationServer extends AbstractHandler {
      * @throws IOException
      */
     private void handleCIRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String payload = request.getReader().lines().collect(Collectors.joining());
+        String payload = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
+        payload = payload.substring("payload=".length());
+        payload = URLDecoder.decode(payload, "UTF-8");
+
         try {
             JSONObject json = new JSONObject(payload);
 
@@ -72,12 +76,12 @@ public class ContinuousIntegrationServer extends AbstractHandler {
             if (json.isNull("head_commit")) return;
 
             JSONObject jsonRepo = json.getJSONObject("repository");
-            JSONObject jsonPusher = json.getJSONObject("pusher");
+            JSONObject jsonOwner = jsonRepo.getJSONObject("owner");
 
             String repoName = jsonRepo.get("name").toString();
             String commitID = json.get("after").toString();
-            String sshURL = json.get("ssh_url").toString();
-            String username = jsonPusher.get("name").toString();
+            String sshURL = jsonRepo.get("ssh_url").toString();
+            String username = jsonOwner.get("name").toString();
 
             String[] spltRef = json.get("ref").toString().split("/");
             String branch;
@@ -117,9 +121,11 @@ public class ContinuousIntegrationServer extends AbstractHandler {
         } catch (JSONException e) {
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
                     "Something went wrong while processing the POST request.");
+            e.printStackTrace();
         } catch(Exception e) {
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
                     "Something went wrong while setting commit status.");
+            e.printStackTrace();
         }
     }
 }
