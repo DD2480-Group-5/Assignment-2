@@ -67,6 +67,7 @@ public class Repository {
 
             // update status -> PENDING
             this.handler.setState(STATE.PENDING);
+            this.handler.setStatus(this.id, "ci-test", "www.google.com");
             // begin build progress
             // build process
             System.out.println("Begin to build.");
@@ -95,6 +96,7 @@ public class Repository {
             } else {
                 this.handler.setState(STATE.FAILURE);
             }
+            this.handler.setStatus(this.id, "ci-test", "www.google.com");
             return this.handler.getState();
         } catch (Exception e) {
             throw new RuntimeException(e);

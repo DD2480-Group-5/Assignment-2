@@ -53,4 +53,24 @@ class RepositoryTest {
 
         repo.deleteRepository();
     }
+
+    @Test
+    /**
+     * This test is used to test the build result. 
+     */
+    public void buildRepoTest2() {
+        String id = "3be0b51c64466447abefe2e6997aa6ca6723cbd7";
+        String name = "Assignment-2";
+        String url = "git@github.com:DD2480-Group-5/Assignment-2.git";
+        String branch = "ci_test";
+        String user = "DD2480-Group-5";
+
+        Repository repo = new Repository(id, name, url, branch, user);
+        STATE status = repo.buildRepository();
+
+        System.out.println(status);
+        assertSame(STATE.SUCCESS, status);
+
+        repo.deleteRepository();
+    }
 }

@@ -91,6 +91,7 @@ public class ContinuousIntegrationServer extends AbstractHandler {
             }
 
             Repository repo = new Repository(commitID, repoName, sshURL, branch, username);
+            response.setStatus(HttpServletResponse.SC_OK);
 
             repo.buildRepository();
             /**
@@ -98,7 +99,7 @@ public class ContinuousIntegrationServer extends AbstractHandler {
              * resolved
              */
 
-            response.setStatus(HttpServletResponse.SC_OK);
+
 
         } catch (JSONException e) {
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
