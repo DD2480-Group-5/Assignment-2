@@ -30,7 +30,7 @@ public class GitHubAPIHandler {
 
     /**
      * Constructor
-     * 
+     * `
      * @param owner      The account owner of the repository. The name is not case
      *                   sensitive.
      * @param repository The name of the repository. The name is not case sensitive.
@@ -54,7 +54,7 @@ public class GitHubAPIHandler {
                 + description + "\",\"context\": \"default\"}";
         RequestBody body = RequestBody.create(requestJson, JSON);
         Request request = new Request.Builder()
-                .url("https://api.github.com/repos/" + repository + "/statuses/" + headSha)
+                .url("https://api.github.com/repos/" + owner + "/" + repository + "/statuses/" + headSha)
                 .header("Authorization", owner + " " + apiKey)
                 .post(body)
                 .build();
