@@ -14,7 +14,9 @@ import org.eclipse.jetty.server.handler.AbstractHandler;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import ci.GitHubAPIHandler;
 import ci.Repository;
+import ci.GitHubAPIHandler.STATE;
 
 public class ContinuousIntegrationServer extends AbstractHandler {
     public void handle(String target,
@@ -91,18 +93,33 @@ public class ContinuousIntegrationServer extends AbstractHandler {
             }
 
             Repository repo = new Repository(commitID, repoName, sshURL, branch, username);
+            GitHubAPIHandler handler  = new GitHubAPIHandler(repoName, username);
+            handler.setState(STATE.PENDING);
+            handler.setStatus(commitID, "Building app...", "");
+            STATE exitState = repo.buildRepository();
+            handler.setState(exitState);
 
-            repo.buildRepository();
-            /**
-             * Add test when https://github.com/DD2480-Group-5/Assignment-2/issues/14 is
-             * resolved
-             */
+            switch (handler.getState()) {
+                case SUCCESS:
+                    handler.setStatus(commitID, "Build and test succesful!", "");
+                    break;
+                case FAILURE:
+                    handler.setStatus(commitID, "Build and test failed!", "");
+                    break;
+                default:
+                    handler.setState(STATE.FAILURE);
+                    handler.setStatus(commitID, "Something went wrong.", "");
+                    break;
+            }
 
             response.setStatus(HttpServletResponse.SC_OK);
 
         } catch (JSONException e) {
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
                     "Something went wrong while processing the POST request.");
+        } catch(Exception e) {
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+                    "Something went wrong while setting commit status.");
         }
     }
 }
