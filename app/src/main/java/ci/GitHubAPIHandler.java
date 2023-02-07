@@ -50,7 +50,7 @@ public class GitHubAPIHandler {
      * @return The response or {@code null} if there was an error
      */
     public Response setStatus(String headSha, String description, String targetUrl) {
-        String requestJson = "{\"state\": \"" + state + "\",\"target_url\": \"" + targetUrl + "\",\"description\": \""
+        String requestJson = "{\"state\": \"" + state.toString().toLowerCase() + "\",\"target_url\": \"" + targetUrl + "\",\"description\": \""
                 + description + "\",\"context\": \"default\"}";
         RequestBody body = RequestBody.create(requestJson, JSON);
         Request request = new Request.Builder()
