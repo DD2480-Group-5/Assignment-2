@@ -31,6 +31,7 @@ The server accepts a POST request from a GitHub webhook to start a CI pipeline w
 - Initialised gradle repository with dependencies needed for `ContiniousIntegrationServer` class.
 
 ### Elias Thiele
+- Testing and debugging server and build methods
 
 ### Zihao Xu
 - Implement `cloneRepository` method and its unit test.
