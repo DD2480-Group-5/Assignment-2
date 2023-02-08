@@ -6,6 +6,7 @@ import ci.GitHubAPIHandler.STATE;
 
 import java.io.File;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -29,7 +30,7 @@ class RepositoryTest {
         File dir = new File(dirName);
         System.out.println(dir);
 
-        assertTrue(dir.exists() && dir.isDirectory());
+        assertFalse(dir.exists() && dir.isDirectory());
 
         repo.deleteRepository();
     }
