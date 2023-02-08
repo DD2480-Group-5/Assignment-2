@@ -94,17 +94,17 @@ public class ContinuousIntegrationServer extends AbstractHandler {
             StringBuilder commitInfo_sb = new StringBuilder();
             if (!added.isNull(0)) {
                 for (int i = 0; i < added.length(); i++) {
-                    commitInfo_sb.append("Added: ").append(added.getString(i)).append('\n');
+                    commitInfo_sb.append("Added - ").append(added.getString(i)).append('\n');
                 }
             }
             if (!removed.isNull(0)) {
                 for (int i = 0; i < removed.length(); i++) {
-                    commitInfo_sb.append("Removed: ").append(removed.getString(i)).append('\n');
+                    commitInfo_sb.append("Removed - ").append(removed.getString(i)).append('\n');
                 }
             }
             if (!modified.isNull(0)) {
                 for (int i = 0; i < modified.length(); i++) {
-                    commitInfo_sb.append("Modified: ").append(modified.getString(i)).append('\n');
+                    commitInfo_sb.append("Modified - ").append(modified.getString(i)).append('\n');
                 }
             }
             String commitInfo = commitInfo_sb.toString();
@@ -133,11 +133,11 @@ public class ContinuousIntegrationServer extends AbstractHandler {
 
             switch (handler.getState()) {
                 case SUCCESS:
-                    history.saveBuild(commitID, "success", message, timestamp, commitURL, committer, commitInfo);
+                    history.saveBuild(commitID, "success", message, timestamp, commitURL, committer, commitInfo, true);
                     handler.setStatus(commitID, "Build and test successful!", "");
                     break;
                 case FAILURE:
-                    history.saveBuild(commitID, "failure", message, timestamp, commitURL, committer, commitInfo);
+                    history.saveBuild(commitID, "failure", message, timestamp, commitURL, committer, commitInfo, true);
                     handler.setStatus(commitID, "Build and test failed!", "");
                     break;
                 default:
