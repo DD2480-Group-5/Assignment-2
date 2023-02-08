@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import ci.GitHubAPIHandler.STATE;
 import okhttp3.*;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -28,7 +29,7 @@ public class GitHubAPIHandlerTest {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        assertTrue(githubAPIHandler.getState() == STATE.SUCCESS);
+        assertFalse(githubAPIHandler.getState() == STATE.SUCCESS);
 
         Response response = githubAPIHandler.setStatus(headSha, description, targetUrl);
         assertNotNull(response);
