@@ -19,7 +19,7 @@ public class GitHubAPIHandler {
      * Personal GitHub token, must be set as an environment variable by the name of
      * {@code"GITHUB_TOKEN"}
      */
-    private static final String apiKey = System.getenv("GITHUB_TOKEN");
+    private static final String apiKey = "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";
 
     private String repository;
     private STATE state = STATE.PENDING;
@@ -55,7 +55,7 @@ public class GitHubAPIHandler {
         RequestBody body = RequestBody.create(requestJson, JSON);
         Request request = new Request.Builder()
                 .url("https://api.github.com/repos/" + owner + "/" + repository + "/statuses/" + headSha)
-                .header("Authorization", owner + " " + apiKey)
+                .header("Authorization", "Token " + apiKey)
                 .post(body)
                 .build();
         try (Response response = client.newCall(request).execute()) {
