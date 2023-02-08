@@ -29,7 +29,7 @@ public class GitHubAPIHandlerTest {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        assertFalse(githubAPIHandler.getState() == STATE.SUCCESS);
+        assertTrue(githubAPIHandler.getState() == STATE.SUCCESS);
 
         Response response = githubAPIHandler.setStatus(headSha, description, targetUrl);
         assertNotNull(response);
