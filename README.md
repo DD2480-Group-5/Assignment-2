@@ -21,6 +21,10 @@ The server accepts a POST request from a GitHub webhook to start a CI pipeline w
 ## Statement of contributions
 ### Minchong Li
 
+- Implement `buildRepository` method.
+- Implement `Status` and its unit test.
+- Implement `History` class and its unit test.
+
 ### Ali Shahwali
 
 ### Elias Thiele
