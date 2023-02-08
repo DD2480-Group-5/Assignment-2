@@ -26,13 +26,11 @@ public class ContinuousIntegrationServer extends AbstractHandler {
             throws IOException, ServletException {
         try {
             response.setContentType("text/html;charset=utf-8");
-            // response.setStatus(HttpServletResponse.SC_OK);
             baseRequest.setHandled(true);
             String method = request.getMethod();
 
             switch (method.toUpperCase()) {
                 case "GET":
-                    // Currently not implemented
                     break;
                 case "POST":
                     handleCIRequest(request, response);
