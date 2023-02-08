@@ -32,7 +32,19 @@ public class History {
         }
     }
 
-
+    /**
+     * 
+     * @param commitID : commit SHA of the commit
+     * @param status : commit status
+     * @param message : build message
+     * @param timestamp : timestamp of the commit
+     * @param commitURL : commit URL on GitHub
+     * @param committer : committer of the commit
+     * @param commitInfo : Information of the commit
+     * @param save : Boolean. If true, save this commit in html file.
+     * @return Boolean. If true, the program is successfully exit.
+     * @throws IOException
+     */
     public boolean saveBuild(String commitID, String status, String message, String timestamp, String commitURL,
                              String committer, String commitInfo, boolean save) throws IOException {
         String commitInfo_copy = commitInfo == null ? "Null" : commitInfo;
@@ -43,6 +55,7 @@ public class History {
         String templatePath = directory.getAbsolutePath() + "\\ciHistory\\template.html";
         BufferedReader br = new BufferedReader(new FileReader(templatePath));
         String template = br.lines().collect(Collectors.joining("\n"));
+        br.close();
 
         // replace tag
         template = template.replaceAll("\\{\\{commitID}}", commitID)
@@ -72,6 +85,8 @@ public class History {
             while ((line = bf.readLine()) != null) {
                 lines.append(line);
             }
+            bf.close();
+
             String allBuilds = lines.toString();
             allBuilds = allBuilds.substring(0, allBuilds.length() - 14);
 

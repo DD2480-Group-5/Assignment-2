@@ -7,7 +7,12 @@ import java.io.IOException;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class HistoryTest {
+
     @Test
+    /**
+     * This test is used to test saveBuild method can be done successfully.
+     * @throws IOException
+     */
     public void testSaveBuild() throws IOException {
         String commitID = "18ce5121bba10bf0b784bcc04a8e87a7100bb24c";
         String message = "test for ass 4";

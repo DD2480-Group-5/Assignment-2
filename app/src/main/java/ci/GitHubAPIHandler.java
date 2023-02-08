@@ -15,10 +15,6 @@ public class GitHubAPIHandler {
         SUCCESS
     }
 
-    /**
-     * Personal GitHub token, must be set as an environment variable by the name of
-     * {@code"GITHUB_TOKEN"}
-     */
     private static final String apiKey = "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";
 
     private String repository;
@@ -30,7 +26,7 @@ public class GitHubAPIHandler {
 
     /**
      * Constructor
-     * `
+     * 
      * @param owner      The account owner of the repository. The name is not case
      *                   sensitive.
      * @param repository The name of the repository. The name is not case sensitive.
