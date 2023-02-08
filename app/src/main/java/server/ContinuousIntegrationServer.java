@@ -1,29 +1,28 @@
 package server;
 
+import ci.GitHubAPIHandler;
+import ci.GitHubAPIHandler.STATE;
+import ci.History;
+import ci.Repository;
+import org.eclipse.jetty.server.Request;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.handler.AbstractHandler;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.ServletException;
-
 import java.io.IOException;
 import java.net.URLDecoder;
 import java.util.stream.Collectors;
 
-import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.Request;
-import org.eclipse.jetty.server.handler.AbstractHandler;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import ci.GitHubAPIHandler;
-import ci.Repository;
-import ci.GitHubAPIHandler.STATE;
-
 public class ContinuousIntegrationServer extends AbstractHandler {
     public void handle(String target,
-            Request baseRequest,
-            HttpServletRequest request,
-            HttpServletResponse response)
+                       Request baseRequest,
+                       HttpServletRequest request,
+                       HttpServletResponse response)
             throws IOException, ServletException {
         try {
             response.setContentType("text/html;charset=utf-8");
@@ -51,7 +50,7 @@ public class ContinuousIntegrationServer extends AbstractHandler {
 
     // used to start the CI server in command line
     public static void main(String[] args) throws Exception {
-        Server server = new Server(8080);
+        Server server = new Server(8005);
         server.setHandler(new ContinuousIntegrationServer());
         server.start();
         server.join();
@@ -59,7 +58,7 @@ public class ContinuousIntegrationServer extends AbstractHandler {
 
     /**
      * Handles POST requests for CI.
-     * 
+     *
      * @param request  JSON object
      * @param response
      * @throws IOException
@@ -83,6 +82,34 @@ public class ContinuousIntegrationServer extends AbstractHandler {
             String sshURL = jsonRepo.get("ssh_url").toString();
             String username = jsonOwner.get("name").toString();
 
+            // get field for persisting storage
+            JSONObject commitsField = json.getJSONArray("commits").getJSONObject(0);
+            String message = commitsField.get("message").toString();
+            String timestamp = commitsField.get("timestamp").toString();
+            String commitURL = commitsField.get("url").toString();
+            String committer = commitsField.getJSONObject("committer").get("name").toString();
+            JSONArray added = commitsField.getJSONArray("added");
+            JSONArray removed = commitsField.getJSONArray("removed");
+            JSONArray modified = commitsField.getJSONArray("modified");
+            StringBuilder commitInfo_sb = new StringBuilder();
+            if (!added.isNull(0)) {
+                for (int i = 0; i < added.length(); i++) {
+                    commitInfo_sb.append("Added: ").append(added.getString(i)).append('\n');
+                }
+            }
+            if (!removed.isNull(0)) {
+                for (int i = 0; i < removed.length(); i++) {
+                    commitInfo_sb.append("Removed: ").append(removed.getString(i)).append('\n');
+                }
+            }
+            if (!modified.isNull(0)) {
+                for (int i = 0; i < modified.length(); i++) {
+                    commitInfo_sb.append("Modified: ").append(modified.getString(i)).append('\n');
+                }
+            }
+            String commitInfo = commitInfo_sb.toString();
+
+
             String[] spltRef = json.get("ref").toString().split("/");
             String branch;
             /* some branch name may contain '/' */
@@ -91,23 +118,26 @@ public class ContinuousIntegrationServer extends AbstractHandler {
                 for (int i = 3; i < spltRef.length; i++) {
                     branch = branch.concat("/" + spltRef[i]);
                 }
-            }
-            else {
+            } else {
                 branch = spltRef[spltRef.length - 1];
             }
 
             Repository repo = new Repository(commitID, repoName, sshURL, branch, username);
-            GitHubAPIHandler handler  = new GitHubAPIHandler(repoName, username);
+            GitHubAPIHandler handler = new GitHubAPIHandler(repoName, username);
             handler.setState(STATE.PENDING);
             handler.setStatus(commitID, "Building app...", "");
             STATE exitState = repo.buildRepository();
             handler.setState(exitState);
 
+            History history = new History();
+
             switch (handler.getState()) {
                 case SUCCESS:
-                    handler.setStatus(commitID, "Build and test succesful!", "");
+                    history.saveBuild(commitID, "success", message, timestamp, commitURL, committer, commitInfo);
+                    handler.setStatus(commitID, "Build and test successful!", "");
                     break;
                 case FAILURE:
+                    history.saveBuild(commitID, "failure", message, timestamp, commitURL, committer, commitInfo);
                     handler.setStatus(commitID, "Build and test failed!", "");
                     break;
                 default:
@@ -122,7 +152,7 @@ public class ContinuousIntegrationServer extends AbstractHandler {
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
                     "Something went wrong while processing the POST request.");
             e.printStackTrace();
-        } catch(Exception e) {
+        } catch (Exception e) {
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
                     "Something went wrong while setting commit status.");
             e.printStackTrace();
