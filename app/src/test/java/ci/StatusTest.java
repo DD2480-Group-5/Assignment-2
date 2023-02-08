@@ -25,6 +25,8 @@ public class StatusTest {
         handler.setState(STATE.PENDING);
 
         assertEquals(handler.getState(), STATE.PENDING);
+		
+		assertTrue(false);
 
         /* please note that the targetUrl is different ssh-url of the repo, it's related to the CI server. */
         // Response response = handler.setStatus(id, "ci-test", targetUrl);
