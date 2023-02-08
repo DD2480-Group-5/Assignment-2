@@ -33,18 +33,18 @@ public class History {
     }
 
 
-    public void saveBuild(String commitID, String status, String message, String timestamp, String commitURL,
-                          String committer, String commitInfo) throws IOException {
+    public boolean saveBuild(String commitID, String status, String message, String timestamp, String commitURL,
+                             String committer, String commitInfo, boolean save) throws IOException {
         String commitInfo_copy = commitInfo == null ? "Null" : commitInfo;
 
-        // read the template file
+        // read the template.html
         File directory = new File("");
 
         String templatePath = directory.getAbsolutePath() + "\\ciHistory\\template.html";
         BufferedReader br = new BufferedReader(new FileReader(templatePath));
         String template = br.lines().collect(Collectors.joining("\n"));
 
-        // replace each tag with its corresponding data value
+        // replace tag
         template = template.replaceAll("\\{\\{commitID}}", commitID)
                 .replaceAll("\\{\\{status}}", status)
                 .replaceAll("\\{\\{message}}", message)
@@ -53,11 +53,14 @@ public class History {
                 .replaceAll("\\{\\{committer}}", committer)
                 .replaceAll("\\{\\{commitInfo}}", commitInfo_copy);
 
-        // save the altered template as a separate file
-        File buildPath = new File(directory.getAbsolutePath() + "\\ciHistory\\" + commitID + ".html");
-        FileWriter fw = new FileWriter(buildPath);
-        fw.write(template);
-        fw.close();
+        // save the html
+        if (save) {
+            File buildPath = new File(directory.getAbsolutePath() + "\\ciHistory\\" + commitID + ".html");
+            FileWriter fw = new FileWriter(buildPath);
+            fw.write(template);
+            fw.close();
+        }
+
 
         // save this build to allBuild.html
         String allBuildPath = directory.getAbsolutePath() + "\\ciHistory\\allBuilds.html";
@@ -84,11 +87,13 @@ public class History {
                     "</html>";
 
             // save the renewed allBuilds.html
-            File allBuildFile = new File(allBuildPath);
-            FileWriter allBuilds_fw = new FileWriter(allBuildFile);
-            allBuilds_fw.write(allBuilds);
-            allBuilds_fw.close();
-
+            if (save) {
+                File allBuildFile = new File(allBuildPath);
+                FileWriter allBuilds_fw = new FileWriter(allBuildFile);
+                allBuilds_fw.write(allBuilds);
+                allBuilds_fw.close();
+            }
         }
+        return true;
     }
 }
