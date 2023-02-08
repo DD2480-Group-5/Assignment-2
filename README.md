@@ -26,6 +26,10 @@ The server accepts a POST request from a GitHub webhook to start a CI pipeline w
 ### Elias Thiele
 
 ### Zihao Xu
+- Implement `cloneRepository` method and its unit test.
+- Write unit tests for `buildRepository` method for three possible cases: build success, compile error, test error.
+- Bug fixes in JSON parser.
+- Bug fixes in commit status request format. 
 
 ## Way of working assessment according to essence standard
 From our assessment we are in the "**Formed**"" state, our individual responsibilites are understood, we are in total 4 members that are all enabled to work, everyone understands how to perform their work and everyone is acceptin work. We have defined a communication mechanism that works well. In order to move to the next state "**Collaborating**", we will have to have a more open communication and, maybe by having more voice/physical communication rather than text based. Communication through text only makes it rather hard to fulfill the checklist for the "**Collaborating**" state.
