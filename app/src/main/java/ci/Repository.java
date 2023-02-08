@@ -35,7 +35,7 @@ public class Repository {
      * @param name   : name of the repository
      * @param url    : ssh-url of the repository
      * @param branch : branch name of the repository
-     * @param user   : user name of the committer
+     * @param user   : user name of the repository owner
      */
     public Repository(String id, String name, String url, String branch, String user) {
         this.id = id;
@@ -50,8 +50,20 @@ public class Repository {
         }
     }
 
+    /**
+     * Return the name of the temporary directory of the cloned repository.
+     * @return Directory in String.
+     */
     public String getDirName() {
         return this.directory.toAbsolutePath().toString();
+    }
+
+    /**
+     * Return the build state of the repository.
+     * @return INIT, SUCCESS, COMPILE_ERROR or TEST_ERROR.
+     */
+    public BUILD_STATE getBuildState() {
+        return this.buildState;
     }
 
     /**
@@ -96,11 +108,12 @@ public class Repository {
                 this.buildState = BUILD_STATE.SUCCESS;
                 this.handler.setState(STATE.SUCCESS);
             } else {
-                if (buildOutput.contains("Compilation failed")) {
+                if (buildOutput.contains("Task :app:compileJava FAILED") || 
+                    buildOutput.contains("Task :app:compileTestJava FAILED")) {
                     this.buildState = BUILD_STATE.COMPILE_ERROR;
                     System.out.println("Build Failed: Compilation Failed.");
                 }
-                if (buildOutput.contains("There were failing tests")) {
+                if (buildOutput.contains("Task :app:test FAILED")) {
                     this.buildState = BUILD_STATE.TEST_ERROR;
                     System.out.println("Build Failed: Test Failed.");
                 }
