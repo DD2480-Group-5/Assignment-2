@@ -8,15 +8,22 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class Repository {
+    public enum BUILD_STATE {
+        INIT,
+        SUCCESS,
+        COMPILE_ERROR,
+        TEST_ERROR
+    };
+
     private String id;
     private String name;
     private String url;
     private String branch;
-    /* temporary directory where the git clone command will be executed, need to visit next level directory to access the repository */
+    private String buildOutput = "";
+    /* buildState variable used for test */
+    private BUILD_STATE buildState = BUILD_STATE.INIT;
     private Path directory;
     private GitHubAPIHandler handler;
     // private Status status;
@@ -31,13 +38,11 @@ public class Repository {
      * @param user   : user name of the committer
      */
     public Repository(String id, String name, String url, String branch, String user) {
-        // may be need a constructor which takes in a JSONObject, currently just use this one //
         this.id = id;
         this.name = name;
         this.url = url;
         this.branch = branch;
         this.handler = new GitHubAPIHandler(name, user);
-        // this.status = new Status(name, id, INIT, url, this.name + " " + this.branch, user);
         try {
             this.directory = Files.createTempDirectory(this.name + "-");
         } catch (IOException e) {
@@ -73,14 +78,32 @@ public class Repository {
             Process p = Runtime.getRuntime().exec(buildCommand, null, projectDir);
             p.waitFor();
 
-            int exitCode = p.exitValue();
+            /* get build output */
+            StringBuilder output = new StringBuilder();
+            String line = "";
+            BufferedReader bf = new BufferedReader(new InputStreamReader(p.getInputStream()));
+            while ((line = bf.readLine()) != null) {
+                System.out.println(line);
+                output.append(line).append('\n');
+            }
+            this.buildOutput = output.toString();
 
-            System.out.println("Build task done!");
+            int exitCode = p.exitValue();
 
             // exit code 0 is success by convention
             if (exitCode == 0) {
+                System.out.println("Build Successful!");
+                this.buildState = BUILD_STATE.SUCCESS;
                 this.handler.setState(STATE.SUCCESS);
             } else {
+                if (buildOutput.contains("Compilation failed")) {
+                    this.buildState = BUILD_STATE.COMPILE_ERROR;
+                    System.out.println("Build Failed: Compilation Failed.");
+                }
+                if (buildOutput.contains("There were failing tests")) {
+                    this.buildState = BUILD_STATE.TEST_ERROR;
+                    System.out.println("Build Failed: Test Failed.");
+                }
                 this.handler.setState(STATE.FAILURE);
             }
 
