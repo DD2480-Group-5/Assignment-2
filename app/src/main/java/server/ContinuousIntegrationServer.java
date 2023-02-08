@@ -129,14 +129,18 @@ public class ContinuousIntegrationServer extends AbstractHandler {
 
             History history = new History();
 
-            switch (handler.getState()) {
+            switch (repo.getBuildState()) {
                 case SUCCESS:
                     history.saveBuild(commitID, "success", message, timestamp, commitURL, committer, commitInfo, true);
                     handler.setStatus(commitID, "Build and test successful!", "");
                     break;
-                case FAILURE:
+                case COMPILE_ERROR:
                     history.saveBuild(commitID, "failure", message, timestamp, commitURL, committer, commitInfo, true);
-                    handler.setStatus(commitID, "Build and test failed!", "");
+                    handler.setStatus(commitID, "Compilation failed!", "");
+                    break;
+                case TEST_ERROR:
+                    history.saveBuild(commitID, "failure", message, timestamp, commitURL, committer, commitInfo, true);
+                    handler.setStatus(commitID, "Test failed!", "");
                     break;
                 default:
                     handler.setState(STATE.FAILURE);
