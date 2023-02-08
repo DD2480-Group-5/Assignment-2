@@ -26,6 +26,9 @@ The server accepts a POST request from a GitHub webhook to start a CI pipeline w
 - Implement `History` class and its unit test.
 
 ### Ali Shahwali
+- Implemented POST endpoint for triggering CI.
+- Partially implemented `GitHubAPIHandler` class.
+- Initialised gradle repository with dependencies needed for `ContiniousIntegrationServer` class.
 
 ### Elias Thiele
 
