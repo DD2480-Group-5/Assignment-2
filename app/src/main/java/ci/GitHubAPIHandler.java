@@ -19,7 +19,7 @@ public class GitHubAPIHandler {
      * Personal GitHub token, must be set as an environment variable by the name of
      * {@code"GITHUB_TOKEN"}
      */
-    private static final String apiKey = "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";
+    private static final String apiKey = "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";
 
     private String repository;
     private STATE state = STATE.PENDING;
