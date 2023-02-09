@@ -9,6 +9,9 @@ import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+/**
+ * This class represents a Git repository. The class supports cloning and building of the repository.
+ */
 public class Repository {
     public enum BUILD_STATE {
         INIT,

@@ -18,7 +18,14 @@ import java.io.IOException;
 import java.net.URLDecoder;
 import java.util.stream.Collectors;
 
+/**
+ * A continuous integration server.
+ */
 public class ContinuousIntegrationServer extends AbstractHandler {
+
+    /* (non-Javadoc)
+     * @see org.eclipse.jetty.server.Handler#handle(java.lang.String, org.eclipse.jetty.server.Request, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+     */
     public void handle(String target,
                        Request baseRequest,
                        HttpServletRequest request,
@@ -46,7 +53,11 @@ public class ContinuousIntegrationServer extends AbstractHandler {
 
     }
 
-    // used to start the CI server in command line
+    
+    /**
+     * Starts the CI server in the command line
+     * @throws Exception
+     */
     public static void main(String[] args) throws Exception {
         Server server = new Server(8005);
         server.setHandler(new ContinuousIntegrationServer());
