@@ -71,7 +71,7 @@ public class Repository {
 
     /**
      * This function should build the repository and return the status of the build
-     * See issue {@link https://github.com/DD2480-Group-5/Assignment-2/issues/3}.
+     * See issue https://github.com/DD2480-Group-5/Assignment-2/issues/3
      */
     public STATE buildRepository() {
         try {
@@ -131,7 +131,7 @@ public class Repository {
 
     /**
      * This function should use the class variables to clone the repository
-     * See issue {@link https://github.com/DD2480-Group-5/Assignment-2/issues/1}.
+     * See issue https://github.com/DD2480-Group-5/Assignment-2/issues/1
      */
     public void cloneRepository() {
         try {
