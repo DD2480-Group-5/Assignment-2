@@ -18,6 +18,8 @@ $ gradle run
 ```
 The server can now be visited at http://localhost:8080/.
 The server accepts a POST request from a GitHub webhook to start a CI pipeline which will update the commit status where the change was made. Currently, the CI server can only build and test gradle projects.
+## Generating documentation
+To generate the javadoc html files, execute `./gradlew javadoc`
 ## Statement of contributions
 ### Minchong Li
 
