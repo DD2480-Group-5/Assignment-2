@@ -15,7 +15,8 @@ public class GitHubAPIHandler {
         SUCCESS
     }
 
-    private static final String apiKey = "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";
+    //private static final String apiKey = "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";
+    private static final String apiKey = System.getenv("GITHUB_TOKEN");
 
     private String repository;
     private STATE state = STATE.PENDING;
@@ -46,6 +47,8 @@ public class GitHubAPIHandler {
      * @return The response or {@code null} if there was an error
      */
     public Response setStatus(String headSha, String description, String targetUrl) {
+        System.out.println("apikey: " + apiKey);
+
         String requestJson = "{\"state\": \"" + state.toString().toLowerCase() + "\",\"target_url\": \"" + targetUrl + "\",\"description\": \""
                 + description + "\",\"context\": \"default\"}";
         RequestBody body = RequestBody.create(requestJson, JSON);
