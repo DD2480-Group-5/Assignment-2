@@ -15,7 +15,6 @@ public class GitHubAPIHandler {
         SUCCESS
     }
 
-    //private static final String apiKey = "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";
     private static final String apiKey = System.getenv("GITHUB_TOKEN");
 
     private String repository;
