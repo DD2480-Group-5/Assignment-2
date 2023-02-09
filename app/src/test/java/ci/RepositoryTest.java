@@ -30,7 +30,7 @@ class RepositoryTest {
         File dir = new File(dirName);
         System.out.println(dir);
 
-        assertFalse(dir.exists() && dir.isDirectory());
+        assertTrue(dir.exists() && dir.isDirectory());
 
         repo.deleteRepository();
     }
