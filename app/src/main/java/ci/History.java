@@ -33,6 +33,7 @@ public class History {
     }
 
     /**
+     * Saves build information to an html file.
      * 
      * @param commitID : commit SHA of the commit
      * @param status : commit status

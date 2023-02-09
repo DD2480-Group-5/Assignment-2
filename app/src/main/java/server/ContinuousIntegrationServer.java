@@ -23,8 +23,17 @@ import java.util.stream.Collectors;
  */
 public class ContinuousIntegrationServer extends AbstractHandler {
 
-    /* (non-Javadoc)
-     * @see org.eclipse.jetty.server.Handler#handle(java.lang.String, org.eclipse.jetty.server.Request, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+    
+    /**
+     * Handles the webhook POST request containing information about the pushed code.
+     * 
+     * @param target        Request target, either a URI or a name
+     * @param baseRequest   The original unwrapped request object
+     * @param request       The webhook POST request
+     * @param response      The HTTP response to the webhook
+     * 
+     * @throws IOException
+     * @throws ServletException
      */
     public void handle(String target,
                        Request baseRequest,
@@ -56,6 +65,7 @@ public class ContinuousIntegrationServer extends AbstractHandler {
     
     /**
      * Starts the CI server in the command line
+     * 
      * @throws Exception
      */
     public static void main(String[] args) throws Exception {
