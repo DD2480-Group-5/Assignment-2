@@ -18,6 +18,7 @@ $ gradle run
 ```
 The server can now be visited at http://localhost:8005/.
 The server accepts a POST request from a GitHub webhook to start a CI pipeline which will update the commit status where the change was made. Currently, the CI server can only build and test gradle projects.
+
 ## Generating documentation
 To generate the javadoc html files, execute `./gradlew javadoc`
 ## Statement of contributions
@@ -42,4 +43,15 @@ To generate the javadoc html files, execute `./gradlew javadoc`
 - Bug fixes in commit status request format. 
 
 ## Way of working assessment according to essence standard
-From our assessment we are in the "**Formed**"" state, our individual responsibilites are understood, we are in total 4 members that are all enabled to work, everyone understands how to perform their work and everyone is acceptin work. We have defined a communication mechanism that works well. In order to move to the next state "**Collaborating**", we will have to have a more open communication and, maybe by having more voice/physical communication rather than text based. Communication through text only makes it rather hard to fulfill the checklist for the "**Collaborating**" state.
+From our assessment we are in the "**Formed**"" state, our individual responsibilites are understood, we are in total 4 members that are all enabled to work, everyone understands how to perform their work and everyone is acceptin work. We have defined a communication mechanism that works well. In order to move to the next state "**Collaborating**", we will have to have a more open communication and, maybe by having more voice/physical communication rather than text based. Communication through text only makes it rather hard to fulfill the checklist for the "**Collaborating**" stat
+
+## Check build history
+
+We use ngrok to construct a local server use our own computer. To expose our localhost to the Internet, use the following command:
+
+```shell
+ngrok http "file:///{path of build history}"
+```
+
+where `{path of build history}`  is the path that stores all the build history (in the format of HTML files).
+
