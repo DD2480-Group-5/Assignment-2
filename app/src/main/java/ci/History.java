@@ -5,6 +5,9 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.stream.Collectors;
 
+/**
+ * This class handles storing and displaying build history in html files.
+ */
 public class History {
     /**
      * get the history in a specific html file.
@@ -44,7 +47,7 @@ public class History {
      * @param commitInfo : Information of the commit
      * @param save : Boolean. If true, save this commit in html file.
      * @return Boolean. If true, the program is successfully exit.
-     * @throws IOException
+     * @throws IOException BufferedReader exception
      */
     public boolean saveBuild(String commitID, String status, String message, String timestamp, String commitURL,
                              String committer, String commitInfo, boolean save) throws IOException {

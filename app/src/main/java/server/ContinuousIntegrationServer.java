@@ -32,8 +32,8 @@ public class ContinuousIntegrationServer extends AbstractHandler {
      * @param request       The webhook POST request
      * @param response      The HTTP response to the webhook
      * 
-     * @throws IOException
-     * @throws ServletException
+     * @throws IOException      string reading error
+     * @throws ServletException servlet error
      */
     public void handle(String target,
                        Request baseRequest,
@@ -65,8 +65,8 @@ public class ContinuousIntegrationServer extends AbstractHandler {
     
     /**
      * Starts the CI server in the command line
-     * 
-     * @throws Exception
+     * @param args command arguments
+     * @throws Exception exception
      */
     public static void main(String[] args) throws Exception {
         Server server = new Server(8005);
@@ -79,8 +79,8 @@ public class ContinuousIntegrationServer extends AbstractHandler {
      * Handles POST requests for CI.
      *
      * @param request  JSON object
-     * @param response
-     * @throws IOException
+     * @param response response
+     * @throws IOException string reading exception 
      */
     private void handleCIRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String payload = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));

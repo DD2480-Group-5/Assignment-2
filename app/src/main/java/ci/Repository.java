@@ -13,10 +13,15 @@ import java.nio.file.Path;
  * This class represents a Git repository. The class supports cloning and building of the repository.
  */
 public class Repository {
+    /** Detailed build state */
     public enum BUILD_STATE {
+        /** initial state */
         INIT,
+        /** build success */
         SUCCESS,
+        /** compilation failed */
         COMPILE_ERROR,
+        /** test failed */
         TEST_ERROR
     };
 
@@ -72,6 +77,7 @@ public class Repository {
     /**
      * This function should build the repository and return the status of the build
      * See issue https://github.com/DD2480-Group-5/Assignment-2/issues/3
+     * @return Build result in INIT, PENDING, FAILURE, SUCCESS.
      */
     public STATE buildRepository() {
         try {

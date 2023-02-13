@@ -8,10 +8,15 @@ import okhttp3.*;
  * This class is used to communicate with the GitHub REST API.
  */
 public class GitHubAPIHandler {
+    /** possible build state */
     public enum STATE {
-        INIT,
-        PENDING,
+        /** initial state */
+        INIT, 
+        /** still building */
+        PENDING, 
+        /** build failed */
         FAILURE,
+        /** build success */
         SUCCESS
     }
 
@@ -75,7 +80,7 @@ public class GitHubAPIHandler {
      * @param state The state to be set, can be either {@code FAILURE},
      *              {@code SUCCESS} or {@code PENDING}. Otherwise an exception is
      *              thrown.
-     * @throws Exception
+     * @throws Exception Wrong status
      */
     public void setState(STATE state) throws Exception {
         if (state == STATE.FAILURE || state == STATE.SUCCESS ||
