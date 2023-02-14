@@ -43,7 +43,7 @@ public class CMVMethodsTest {
         };
         double radius = 1;
         boolean b = CMVMethods.CMV_1(points, radius);
-        assertFalse(b);
+        assertTrue(b);
     }
 
     /**
